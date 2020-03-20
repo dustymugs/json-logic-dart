@@ -1,6 +1,9 @@
 /// Port of json-logic-js
 /// Largely a line-by-line rephrasing of the JavaScript library as a Dart library
 /// Intentionally trying to keep all side-effects and nuances intact with this version
+///
+/// https://github.com/ANVLCO/json-logic-dart
+/// https://github.com/ANVLCO/json-logic-dart/blob/master/LICENSE
 
 class JsonLogic {
   static final Map<String, Function> operations = {
@@ -19,10 +22,10 @@ class JsonLogic {
     'in'    :(a, b)    => b == null ? false : b.contains(a),
     'cat'   :(a)       => (a as List).reduce((acc, val) => acc.toString() + val.toString()),
     'substr':(a, b, c) => (a.toString().substring(b, c)),
-    '+'     :(a)       => (a as List).reduce((acc, val) => _safeInt(acc) + _safeInt(val)),
-    '*'     :(a)       => (a as List).reduce((acc, val) => _safeInt(acc) * _safeInt(val)),
-    '-'     :(a)       => _isSingle(a) ? _safeInt(a) * -1 : (a as List).reduce((acc, val) => _safeInt(acc) - _safeInt(val)),
-    '/'     :(a, b)    => _safeInt(a) / _safeInt(b),
+    '+'     :(a)       => (a as List).reduce((acc, val) => _safeNum(acc) + _safeNum(val)),
+    '*'     :(a)       => (a as List).reduce((acc, val) => _safeNum(acc) * _safeNum(val)),
+    '-'     :(a)       => _isSingle(a) ? _safeNum(a) * -1 : (a as List).reduce((acc, val) => _safeNum(acc) - _safeNum(val)),
+    '/'     :(a, b)    => _safeNum(a) / _safeNum(b),
     'min'   :(a)       => (a as List).reduce((acc, val) => val.toString().compareTo(acc.toString()) < 0 ? val : acc),
     'max'   :(a)       => (a as List).reduce((acc, val) => val.toString().compareTo(acc.toString()) > 0 ? val : acc),
     'merge' :(a)       => (a as List).fold([], (acc, val) { val is Iterable ? acc.addAll(val) : acc.add(val); return acc; }),
@@ -42,14 +45,14 @@ class JsonLogic {
     }
   }
 
-  static int _safeInt(value) {
+  static double _safeNum(value) {
    if(value is String) {
-     return int.parse(value);
+     return double.parse(value);
    } else if(value is Iterable) {
-     return _safeInt(value.single);
+     return _safeNum(value.single);
    }
 
-   return value;
+   return value as double;
   }
 
   static dynamic _dereferenceVariable(String name, defaultValue, data) {
@@ -250,14 +253,14 @@ class JsonLogic {
       return _missing(values, data);
     } else if(op == 'missing_some') {
       // missing_some takes two arguments, how many (minimum) items must be present, and an array of keys (just like 'missing') to check for presence.
-      var need_count = values[0];
+      var needCount = values[0];
       var options = values[1];
-      var are_missing = apply({'missing': options}, data);
+      var areMissing = apply({'missing': options}, data);
 
-      if(options.length - are_missing.length >= need_count) {
+      if(options.length - areMissing.length >= needCount) {
         return [];
       }else{
-        return are_missing;
+        return areMissing;
       }
     } else if(op == 'var') {
       var defaultValue = values.length < 2 ? null : values[1];

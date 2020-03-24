@@ -26,7 +26,7 @@ class JsonLogic {
     '*'     :(a)       => (a as List).reduce((acc, val) => _safeNum(acc) * _safeNum(val)),
     '-'     :(a)       => _isSingle(a) ? _safeNum(a) * -1 : (a as List).reduce((acc, val) => _safeNum(acc) - _safeNum(val)),
     '/'     :(a, b)    => _safeNum(a) / _safeNum(b),
-		'abs'   :(a)       => _saveNum(a).abs(),
+		'abs'   :(a)       => _safeNum(a).abs(),
     'min'   :(a)       => (a as List).reduce((acc, val) => val.toString().compareTo(acc.toString()) < 0 ? val : acc),
     'max'   :(a)       => (a as List).reduce((acc, val) => val.toString().compareTo(acc.toString()) > 0 ? val : acc),
     'merge' :(a)       => (a as List).fold([], (acc, val) { val is Iterable ? acc.addAll(val) : acc.add(val); return acc; }),

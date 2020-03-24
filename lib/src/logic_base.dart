@@ -250,7 +250,7 @@ class JsonLogic {
     // and "values" passed as positional arguments. Structured commands like %
     // or > can name formal arguments while flexible commands (like missing or
     // merge) can operate on the pseudo-array arguments.
-    if(['cat', '+', '*', '-', 'min', 'max', 'merge', '<='].contains(op)) {
+    if(['cat', '+', '*', '-', 'min', 'max', 'merge', '<', '<='].contains(op)) {
       return operations[op](values);
     } else if(op == 'missing') {
       return _missing(values, data);

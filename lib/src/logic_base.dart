@@ -5,6 +5,8 @@
 /// https://github.com/ANVLCO/json-logic-dart
 /// https://github.com/ANVLCO/json-logic-dart/blob/master/LICENSE
 
+import 'dart:math' as math;
+
 class JsonLogic {
   static final Map<String, Function> operations = {
     '=='    :(a, b)    => a == b, // Assume everything is a primitive
@@ -27,6 +29,8 @@ class JsonLogic {
     '-'     :(a)       => _isSingle(a) ? _safeNum(a) * -1 : (a as List).reduce((acc, val) => _safeNum(acc) - _safeNum(val)),
     '/'     :(a, b)    => _safeNum(a) / _safeNum(b),
 		'abs'   :(a)       => _safeNum(a).abs(),
+		'ln'    :(a)       => math.log(_safeNum(a)),
+    '^'     :(a, b)    => math.pow(_safeNum(a), _safeNum(b)),
     'min'   :(a)       => (a as List).reduce((acc, val) => val.toString().compareTo(acc.toString()) < 0 ? val : acc),
     'max'   :(a)       => (a as List).reduce((acc, val) => val.toString().compareTo(acc.toString()) > 0 ? val : acc),
     'merge' :(a)       => (a as List).fold([], (acc, val) { val is Iterable ? acc.addAll(val) : acc.add(val); return acc; }),
